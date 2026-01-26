@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Data Quality Review | KPMG Style</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --kpmg-blue: #00338D;
+    --kpmg-dark: #00205B;
+    --kpmg-light: #F4F7FB;
+    --kpmg-border: #E1E5EB;
+    --kpmg-gray: #5F6368;
+    --white: #FFFFFF;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--kpmg-light);
+    font-family: 'Inter', Arial, sans-serif;
+    color: #1F1F1F;
+}
+
+/* ===== HEADER ===== */
+.top-bar {
+    background: var(--kpmg-blue);
+    padding: 22px 40px;
+    color: white;
+}
+
+.top-bar h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.top-bar span {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+    max-width: 1250px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 6px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+}
+
+/* ===== SECTION TITLES ===== */
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--kpmg-dark);
+    margin-bottom: 15px;
+}
+
+/* ===== UPLOAD PANEL ===== */
+.upload-panel {
+    border: 1px solid var(--kpmg-border);
+    background: #FAFBFE;
+    padding: 30px;
+    border-radius: 6px;
+    margin-bottom: 50px;
+}
+
+button {
+    background: var(--kpmg-blue);
+    color: white;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00286F;
+}
+
+/* ===== MESSAGE ===== */
+.message {
+    background: #EEF3FF;
+    border-left: 4px solid var(--kpmg-blue);
+    padding: 18px;
+    font-size: 14px;
+    margin-bottom: 35px;
+    white-space: pre-line;
+}
+
+/* ===== DATA PANEL ===== */
+.data-panel {
+    border: 1px solid var(--kpmg-border);
+    border-radius: 6px;
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+
+.data-panel-header {
+    background: #F6F8FC;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--kpmg-dark);
+    border-bottom: 1px solid var(--kpmg-border);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    max-height: 420px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 900px;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    background: var(--kpmg-blue);
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--kpmg-border);
+    white-space: nowrap;
+}
+
+tr:nth-child(even) {
+    background: #FAFAFA;
+}
+
+/* ===== DOWNLOAD ===== */
+.download {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.download a {
+    background: var(--kpmg-blue);
+    color: white;
+    padding: 12px 28px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.download a:hover {
+    background: #00286F;
+}
+
+/* ===== RESULTS REVEAL ===== */
+.results-section {
+    margin-top: 60px;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    margin-top: 60px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--kpmg-gray);
+    line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+    <h1>Data Cleaning & Quality Review</h1>
+    <span>Professional Analytics • Audit-Grade Processing • KPMG-Inspired Design</span>
+</div>
+
+<div class="container">
+
+    <!-- UPLOAD SECTION -->
+    <div class="upload-panel">
+        <div class="section-title">Dataset Submission</div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Run Data Cleansing</button>
+        </form>
+    </div>
+
+    <!-- RESULTS SECTION (HIDDEN UNTIL POST) -->
+    {% if message or original_preview or cleaned_preview %}
+    <div class="results-section" id="results">
+
+        {% if message %}
+        <div class="message">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        {% if original_preview %}
+        <div class="data-panel">
+            <div class="data-panel-header">Original Dataset — Initial Review</div>
+            <div class="table-wrapper">
+                {{ original_preview|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if cleaned_preview %}
+        <div class="data-panel">
+            <div class="data-panel-header">Cleansed Dataset — Post Validation</div>
+            <div class="table-wrapper">
+                {{ cleaned_preview|safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if cleaned_file_path %}
+        <div class="download">
+            <a href="{{ cleaned_file_path }}" download>
+                Download Cleansed Output
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+    <div class="footer">
+       The output supports a clear and accurate assessment of data quality.<br>
+        Designed by iCreabot inspired by Sanjo Salisu
+    </div>
+
+</div>
+
+{% if message %}
+<script>
+    document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+</script>
+{% endif %}
+
+</body>
+</html>
